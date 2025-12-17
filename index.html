@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%2310b981%22>J</text></svg>">
+    <meta charset="UTF-8">
+    <title>Jishnu R Kumar | Software Engineer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.2);
+            --bg: #0b0f1a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --sidebar-w: 80px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --card-bg: rgba(0, 0, 0, 0.03);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-main: #0f172a;
+            --text-dim: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background 0.4s;
+        }
+
+        #loader {
+    position: fixed; inset: 0; background: #0b0f1a; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.5s ease-out;
+}
+.loader-content { text-align: center; }
+.code-loader {
+    width: 40px; height: 40px; border: 3px solid var(--primary);
+    border-top-color: transparent; border-radius: 50%;
+    animation: spin 1s linear infinite; margin: 0 auto 15px;
+}
+#loader p { color: var(--primary); font-family: monospace; letter-spacing: 2px; font-size: 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-hidden { opacity: 0; pointer-events: none; }
+
+        /* --- ADVANCED CURSOR --- */
+        #cursor {
+            width: 20px; height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .cursor-hover { transform: scale(3); }
+
+        .glim {
+            position: fixed;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            z-index: -1; filter: blur(100px); pointer-events: none;
+        }
+
+        /* --- STYLISH TILTED MARQUEE --- */
+        .marquee-values {
+            background: var(--primary);
+            color: #fff;
+            padding: 20px 0;
+            transform: rotate(-2deg) translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 100;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .marquee-content { display: flex; animation: scroll 30s linear infinite; width: max-content; }
+        .marquee-item { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin: 0 40px; }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* --- SIDEBAR & NAV --- */
+        .sidebar {
+            position: fixed; top: 0; width: var(--sidebar-w); height: 100vh;
+            border-right: 1px solid var(--glass-border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 500; backdrop-filter: blur(10px);
+        }
+        .social-link { color: var(--text-dim); margin: 20px 0; font-size: 24px; transition: 0.3s; }
+        .social-link:hover { color: var(--primary); transform: translateY(-5px); }
+
+        .container { 
+            max-width: 1300px; margin: auto; padding: 0 50px;
+            margin-left: var(--sidebar-w); margin-right: 0;
+        }
+
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 40px 0; position: sticky; top: 0; z-index: 400; backdrop-filter: blur(10px); }
+        .logo { font-weight: 800; font-size: 20px; letter-spacing: -1px; }
+        .logo span { color: var(--primary); }
+
+        /* --- HERO --- */
+        .hero { min-height: 80vh; display: grid; grid-template-columns: 1.2fr 0.8fr; align-items: center; gap: 40px; padding: 60px 0; }
+        .hero h1 { font-size: clamp(40px, 6vw, 80px); font-weight: 800; line-height: 1; margin-bottom: 30px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { color: var(--text-dim); font-size: 1.1rem; max-width: 500px; margin-bottom: 40px; line-height: 1.6; }
+
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 8px; background: var(--primary-glow);
+            color: var(--primary); padding: 6px 16px; border-radius: 100px; font-size: 12px;
+            font-weight: 700; margin-bottom: 20px; border: 1px solid var(--primary);
+        }
+
+        .pulse { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse-animation 2s infinite; }
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.7); }
+            100% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        }
+
+        .mini-tag { font-size: 13px; color: var(--text-dim); display: flex; align-items: center; gap: 5px; }
+
+        .btn {
+            background: var(--primary); color: #fff; padding: 18px 30px; border-radius: 100px;
+            text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; transition: 0.4s;
+            border: none;
+        }
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 15px 30px var(--primary-glow); }
+
+        .hero-img-wrapper { position: relative; display: flex; justify-content: center; align-items: center; }
+        .hero-img { width: 100%; max-width: 400px; position: relative; z-index: 2; }
+        .hero-img img { width: 100%; border-radius: 40px; border: 1px solid var(--glass-border); filter: grayscale(20%); transition: 0.5s; }
+        .hero-img:hover img { filter: grayscale(0%); transform: scale(1.02); }
+        
+        .hero-circle { position: absolute; width: 115%; height: 115%; border: 1px dashed var(--primary); border-radius: 50%; z-index: 1; animation: rotate 20s linear infinite; opacity: 0.3; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .floating-badge {
+            position: absolute; bottom: 20px; left: -20px; background: var(--bg);
+            border: 1px solid var(--glass-border); padding: 12px 20px; border-radius: 15px;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px); z-index: 3;
+        }
+        .floating-badge i { color: var(--primary); font-size: 20px; }
+        .floating-badge span { font-size: 13px; font-weight: 700; }
+
+              /* --- PROJECTS --- */
+
+        .project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; padding-bottom: 100px; }
+
+        .project-card {
+
+            background: var(--card-bg); border-radius: 40px; overflow: hidden;
+
+            border: 1px solid var(--glass-border); transition: 0.5s; position: relative;
+
+        }
+
+        .project-card img { width: 100%; height: 450px; object-fit: cover; transition: 0.6s; }
+
+        .project-card:hover img { transform: scale(1.05) rotate(1deg); filter: brightness(0.5); }
+
+       
+
+        .project-overlay {
+
+            position: absolute; inset: 0; padding: 40px; display: flex; flex-direction: column;
+
+            justify-content: flex-end; background: linear-gradient(to top, var(--bg), transparent);
+
+            opacity: 0; transition: 0.4s;
+
+        }
+
+        .project-card:hover .project-overlay { opacity: 1; }
+
+
+
+        /* --- ADVANCED PROJECT MODAL (SLIDESHOW) --- */
+
+        #project-modal {
+
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+
+            backdrop-filter: blur(20px); padding: 20px;
+
+        }
+
+        .modal-content {
+
+            background: var(--bg); border: 1px solid var(--glass-border);
+
+            width: 100%; max-width: 1200px; height: 90vh;
+
+            border-radius: 40px; overflow-y: auto; position: relative; display: grid;
+
+            grid-template-columns: 1.2fr 0.8fr;
+
+        }
+
+        .modal-gallery { padding: 20px; display: flex; flex-direction: column; gap: 15px; background: rgba(0,0,0,0.2); }
+
+        .main-slide { width: 100%; height: 60%; border-radius: 20px; object-fit: cover; border: 1px solid var(--glass-border); }
+
+        .thumb-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+
+        .thumb-grid img { height: 80px; width: 100%; object-fit: cover; border-radius: 10px; cursor: pointer; opacity: 0.5; transition: 0.3s; }
+
+        .thumb-grid img:hover, .thumb-grid img.active { opacity: 1; border: 2px solid var(--primary); }
+
+       
+
+        .modal-info { padding: 50px; }
+
+        .feature-tag {
+
+            display: inline-block; padding: 8px 16px; background: var(--card-bg);
+
+            border: 1px solid var(--glass-border); border-radius: 100px; font-size: 12px; margin: 5px; color: var(--primary);
+
+        }
+
+        .skills-marquee {
+    overflow: hidden; padding: 40px 0; background: var(--card-bg);
+    border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);
+    margin: 40px 0;
+}
+.marquee-track {
+    display: flex; width: max-content; animation: scroll-skills 20s linear infinite;
+}
+.marquee-track span {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 40px; color: var(--text-dim); font-weight: 700; font-size: 18px;
+}
+.marquee-track i { color: var(--primary); font-size: 24px; }
+@keyframes scroll-skills { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* --- MODALS & PANELS --- */
+        #panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2900; display: none; backdrop-filter: blur(8px); }
+
+        .side-panel {
+            position: fixed; top: 0; right: -500px; width: 450px; height: 100vh;
+            background: var(--bg); border-left: 1px solid var(--glass-border);
+            z-index: 3000; transition: 0.5s cubic-bezier(0.85, 0, 0.15, 1);
+            padding: 40px; overflow-y: auto; box-shadow: -20px 0 50px rgba(0,0,0,0.5);
+        }
+        .side-panel.active { right: 0; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; position: sticky; top: 0; background: var(--bg); padding-bottom: 20px; z-index: 10; }
+
+        .panel-sec { margin-bottom: 35px; }
+        .panel-sec h4 { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--primary); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+
+        .timeline { border-left: 1px solid var(--glass-border); padding-left: 20px; }
+        .time-item { position: relative; margin-bottom: 25px; }
+        .time-item::before { content: ''; position: absolute; left: -25px; top: 5px; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; }
+        .time-item span { font-size: 11px; color: var(--text-dim); }
+
+        .cert-card { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border); margin-bottom: 10px; font-size: 13px; transition: 0.3s; }
+        .cert-card:hover { border-color: var(--primary); transform: translateX(5px); }
+
+        .interest-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .interest-tags span { padding: 8px 16px; border-radius: 100px; border: 1px solid var(--glass-border); font-size: 12px; display: flex; align-items: center; gap: 8px; }
+
+        /* Project Modal */
+        #project-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(20px); padding: 20px;
+        }
+        .modal-content {
+            background: var(--bg); border: 1px solid var(--glass-border);
+            width: 100%; max-width: 1200px; height: 90vh;
+            border-radius: 40px; overflow-y: auto; position: relative; display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+        }
+
+        /* --- SKILLS PROGRESS --- */
+        .skill-bar-wrap { margin-bottom: 15px; }
+        .skill-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+        .skill-track { height: 6px; background: var(--card-bg); border-radius: 10px; overflow: hidden; }
+        .skill-fill { height: 100%; background: var(--primary); border-radius: 10px; }
+
+        @media(max-width: 1024px) {
+            .container { margin-left: 0; padding: 0 25px; }
+            .sidebar { display: none; }
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero p { margin: 20px auto 40px; }
+            .hero-img-wrapper { margin-top: 40px; }
+            .project-grid { grid-template-columns: 1fr; }
+            .modal-content { grid-template-columns: 1fr; height: auto; }
+            .side-panel { width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div id="loader">
+    <div class="loader-content">
+        <div class="code-loader"></div>
+        <p>PLEASE WAIT,YOUR SYSTEM IS NOT SUPERMAN!...</p>
+    </div>
+</div>
+
+    <div id="cursor"></div>
+    <div class="glim" style="top: -10%; left: -10%;"></div>
+
+    <div id="panel-overlay" onclick="toggleProfile()"></div>
+
+    <div id="profile-panel" class="side-panel">
+        <div class="panel-header">
+            <h3>Professional Profile</h3>
+            <i class="ph-bold ph-x" onclick="toggleProfile()" style="font-size: 28px; cursor: pointer; color: var(--primary);"></i>
+        </div>
+        
+        <div class="panel-content">
+            <section class="panel-sec">
+                <h4><i class="ph-fill ph-graduation-cap"></i> Education</h4>
+                <div class="timeline">
+                    <div class="time-item">
+                        <span>2023 - 2025</span>
+                        <p><strong>MCA</strong> (Postgraduate)</p>
+                        <small>Lourdes Matha College | CGPA: 7.73</small>
+                    </div>
+                    <div class="time-item">
+                        <span>2020 - 2023</span>
+                        <p><strong>BCA</strong> (Undergraduate)</p>
+                        <small>Christ Nagar College | CGPA: 6.78</small>
+                    </div>
+                    <div class="time-item">
+                        <span>2019 - 2020</span>
+                        <p><strong>12th Grade</strong> (HSE)</p>
+                        <small>St Johns Model HSS</small>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel-sec">
+                <h4><i class="ph-fill ph-lightning"></i> Expertise</h4>
+                <div class="skill-bar-wrap">
+                    <div class="skill-info"><span>Python / Django</span><span>90%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="width: 90%;"></div></div>
+                </div>
+                <div class="skill-bar-wrap">
+                    <div class="skill-info"><span>React / MERN Stack</span><span>85%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="width: 85%;"></div></div>
+                </div>
+                <div class="skill-bar-wrap">
+                    <div class="skill-info"><span>Database (MySQL/MongoDB)</span><span>80%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="width: 80%;"></div></div>
+                </div>
+            </section>
+
+            <section class="panel-sec">
+                <h4><i class="ph-fill ph-certificate"></i> Certifications</h4>
+                <div class="cert-list">
+                    <div class="cert-card">MERN Stack Development (KASE)</div>
+                    <div class="cert-card">MEAN Stack (ICT Academy)</div>
+                    <div class="cert-card">Smart Village Project (Nyeste Venture)</div>
+                </div>
+            </section>
+
+            <section class="panel-sec">
+                <h4><i class="ph-fill ph-users-three"></i> Leadership</h4>
+                <ul style="list-style: none; font-size: 13px; color: var(--text-dim); line-height: 1.8;">
+                    <li><strong style="color: var(--text-main);">IV Student Coordinator (2025):</strong> Managed logistics for industrial visits.</li>
+                    <li><strong style="color: var(--text-main);">Event Coordinator:</strong> Organized 'Verismo 2k25' Technical Fest.</li>
+                </ul>
+            </section>
+
+            <section class="panel-sec">
+                <h4><i class="ph-fill ph-heart"></i> Interests</h4>
+                <div class="interest-tags">
+                    <span><i class="ph ph-basketball"></i> Sports</span>
+                    <span><i class="ph ph-music-notes"></i> Music</span>
+                    <span><i class="ph ph-film-strip"></i> Movies</span>
+                    <span><i class="ph ph-television"></i> Anime</span>
+                </div>
+            </section>
+
+            <a href="mailto:jishnurk2002@gmail.com" class="btn" style="width: 100%; justify-content: center; margin-top: 20px;">Hire Me Now</a>
+        </div>
+    </div>
+
+    <div class="marquee-values">
+        <div class="marquee-content">
+            <div class="marquee-item"> SCALABLE ARCHITECTURE</div><div class="marquee-item">•</div>
+            <div class="marquee-item"> MACHINE LEARNING</div><div class="marquee-item">•</div>
+            <div class="marquee-item"> FULL STACK MASTERY</div><div class="marquee-item">•</div>
+            <div class="marquee-item"> USER CENTRIC DESIGN</div><div class="marquee-item">•</div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="https://github.com/Jishnu1234567" target="_blank" class="social-link"><i class="ph-fill ph-github-logo"></i></a>
+        <a href="https://www.linkedin.com/in/jishnu-r-kumar-a5a1b8266/" target="_blank" class="social-link"><i class="ph-fill ph-linkedin-logo"></i></a>
+        <a href="https://www.instagram.com/ji_zhnuu/" target="_blank" class="social-link"><i class="ph-fill ph-instagram-logo"></i></a>
+        <a href="#" class="social-link" style="margin-top: auto; color: var(--primary);"><i class="ph-bold ph-arrow-up"></i></a>
+    </div>
+
+    <div class="container">
+        <nav>
+            <div class="logo">JISHNU<span>.R.</span>KUMAR</div>
+            <ul style="display: flex; gap: 30px; list-style: none; align-items: center;">
+                <li><a href="#work" style="text-decoration:none; color:var(--text-main); font-weight:700; font-size:13px;">WORKS</a></li>
+                <li onclick="toggleTheme()" style="cursor:pointer; background: var(--card-bg); padding: 10px; border-radius: 12px; line-height: 0;">
+                    <i class="ph-fill ph-moon" id="theme-icon" style="font-size: 20px; color: var(--primary);"></i>
+                </li>
+            </ul>
+        </nav>
+
+        <section class="hero">
+            <div data-reveal>
+                <div class="status-pill">
+                    <span class="pulse"></span> Available for Hire
+                </div>
+                <span style="color: var(--primary); font-weight: 800; letter-spacing: 3px; font-size: 12px;">MCA GRADUATE • 2025</span>
+                <h1>Turning Logic into <span>Seamless</span> Experiences.</h1>
+                <p>
+                    I'm <strong>Jishnu R Kumar</strong>, a Full-Stack Developer. 
+                    Crafting intelligent systems with <b>Python/Django</b> and <b>MERN Stack</b>.
+                </p>
+                
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 30px;">
+                    <div class="mini-tag"><i class="ph ph-map-pin"></i> Trivandrum, India</div>
+                    <div class="mini-tag"><i class="ph ph-student"></i> MCA (7.73 CGPA)</div>
+                </div>
+
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="#work" class="btn">Portfolio <i class="ph-bold ph-arrow-down"></i></a>
+                    <a href="assets/jishnu r kumar resume.pdf" target="_blank" class="btn btn-outline" style="padding: 18px 20px;">
+                        <i class="ph-bold ph-file-pdf"></i> CV
+                    </a>
+                    <button onclick="toggleProfile()" class="btn btn-outline" style="padding: 18px 20px;">
+                        <i class="ph-bold ph-user-circle"></i> Profile
+                    </button>
+                </div>
+            </div>
+
+            <div class="hero-img-wrapper" data-reveal>
+                <div class="hero-img">
+                    <img src="assets/WhatsApp Image 2025-10-30 at 1.16.53 PM.jpeg" alt="Jishnu R Kumar">
+                    <div class="floating-badge">
+                        <i class="ph-fill ph-code"></i>
+                        <span>Full Stack Developer</span>
+                    </div>
+                </div>
+                <div class="hero-circle"></div>
+            </div>
+        </section>
+
+
+        <div class="skills-marquee">
+    <div class="marquee-track">
+        <span><i class="ph-fill ph-file-py"></i> PYTHON</span>
+        <span><i class="ph-bold ph-database"></i> DJANGO</span>
+        <span><i class="ph-bold ph-react-logo"></i> REACT.JS</span>
+        <span><i class="ph-fill ph-node-js"></i> NODE.JS</span>
+        <span><i class="ph-bold ph-database"></i> MONGODB</span>
+        <span><i class="ph-bold ph-code"></i> MERN STACK</span>
+        <span><i class="ph-bold ph-brain"></i> MACHINE LEARNING</span>
+        <span><i class="ph-fill ph-file-py"></i> PYTHON</span>
+        <span><i class="ph-bold ph-database"></i> DJANGO</span>
+        <span><i class="ph-bold ph-react-logo"></i> REACT.JS</span>
+    </div>
+</div>
+
+
+
+
+        <section id="work">
+            <div data-reveal style="margin-bottom: 60px;">
+                <h2 style="font-size: 50px; font-weight: 800;">Selected <span style="color: var(--primary)">Works</span></h2>
+            </div>
+            <div class="project-grid" id="project-list"></div>
+        </section>
+
+        <section id="contact" data-reveal style="padding: 100px 0;">
+    <div style="background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 40px; padding: 50px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px;">
+        <div>
+            <h2 style="font-size: 48px; margin-bottom: 20px;">Let's <span style="color:var(--primary)">Connect</span></h2>
+            <p style="color:var(--text-dim); margin-bottom: 30px;">Have a project in mind? Reach out and let's build something extraordinary.</p>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="mini-tag"><i class="ph ph-envelope"></i> jishnurk2002@gmail.com</div>
+                <div class="mini-tag"><i class="ph ph-phone"></i> +91 8281914873</div>
+            </div>
+        </div>
+        
+        <form action="https://formspree.io/f/maqwwwen" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="text" name="name" placeholder="Your Name" required style="padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white;">
+            <input type="email" name="email" placeholder="Your Email" required style="padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white;">
+            <textarea name="message" placeholder="Project Details" rows="5" required style="padding: 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white;"></textarea>
+            <button type="submit" class="btn">Send Message <i class="ph-bold ph-paper-plane-tilt"></i></button>
+        </form>
+    </div>
+</section>
+    </div>
+
+    <div id="project-modal">
+        <div class="modal-content">
+            <i class="ph-bold ph-x" onclick="closeModal()" style="position: absolute; top: 30px; right: 30px; font-size: 30px; z-index: 10; cursor: pointer;"></i>
+            <div class="modal-gallery">
+                <img id="main-preview" class="main-slide" src="" alt="Preview">
+                <div class="thumb-grid" id="thumb-container"></div>
+            </div>
+            <div class="modal-info" id="modal-info-content"></div>
+        </div>
+    </div>
+
+   <footer style="padding: 60px 20px; text-align: center; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.2);">
+    <div style="margin-bottom: 25px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+        <a href="mailto:jishnurk2002@gmail.com" style="text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'">
+            <i class="ph-bold ph-envelope" style="font-size: 20px; color: var(--primary);"></i>
+            jishnurk2002@gmail.com
+        </a>
+
+        <a href="tel:+918281914873" style="text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'">
+            <i class="ph-bold ph-phone" style="font-size: 20px; color: var(--primary);"></i>
+            +91 8281914873
+        </a>
+    </div>
+
+    <div style="font-size: 12px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase;">
+        © 2025 <span style="color: var(--text-main); font-weight: 800;">JISHNU R KUMAR</span> • SOFTWARE ENGINEER
+    </div>
+</footer>
+    <script>
+    const projects = [
+        {
+            title: "StyleHub: Clothing Style Recommendation System",
+            description: "The Clothing Style Recommendation System Using Machine Learning is an intelligent system designed to suggest suitable clothing styles to users based on their preferences or inputs.",
+            features: ["Machine learning recommendations", "Personalized suggestions", "Understands user preferences like body type, gender","Adapts to latest fashion trends","Saves user time by directly showing suitable styles",],
+            Technologies:["Programming Language: Python ","Frame work: Django", "Frontend: HTML,CSS,Javascript","Operating System: Windows","IDE/Editor: VS Code","Algorithm: CNN"],
+            slides: ["assets/f-1.png", "assets/f-2.png", "assets/f-3.png", "assets/f-4.jpeg", "assets/f-5.jpeg", "assets/f-6.jpeg", "assets/f-7.jpeg",],
+            repo: "https://github.com/Jishnu1234567/StyleHub"
+        },
+        {
+            title: "C-Tracker",
+            description: "C-Tracker is a web-based real-time location tracking system that enables administrators to monitor users' movements through a simple browser-based interface.",
+            features: ["Real-time GPS tracking", "Link-based Tracking", "Leaflet interactive maps","Location History","Geofencing"],
+            Technologies:["Programming Language: JavaScript ","Frame work: React", "Frontend: HTML,CSS,Javascript(JSX)","Operating System: Windows","IDE/Editor: VS Code","Database: MongoDB"],
+            slides: ["assets/ct-1.png", "assets/ct-2.jpeg", "assets/ct-3.png", "assets/ct-4.png", "assets/ct-5.png", "assets/ct-6.png"],
+            repo: "https://github.com/Jishnu1234567/CTracker-Children-s-tracker-"
+        },
+        {
+            title: "SmartVillage Database Management System",
+            description: "The Smart Village Database Management System is a comprehensive digital platform designed to improve rural administration and service delivery by integrating Panchayat services, local workforce listings, healthcare management, and citizen services into a centralized system.",
+            features: ["Online Certificates", "Complaint Tracking", "Govt Schemes Monitoring","Digital health care","Agriculture Awarness","local workers available"],
+            Technologies:["Programming Language: Python ","Frame work: Django", "Frontend: HTML,CSS,Javascript","Operating System: Windows","IDE/Editor: VS Code","Database: Sqlite3"],
+            slides: ["assets/sv-1.png", "assets/sv-2.png", "assets/sv-3.png", "assets/sv-4.jpeg", "assets/sv-5.jpeg", "assets/sv-6.jpeg", "assets/sv-7.jpeg",],  
+            repo: "https://github.com/Jishnu1234567/SmartVillage"
+        },
+        {
+            title: "CRIME SCENE OBJECT DETECTION",
+            description: "Develops a Machine Learning-based system that automatically detects and identifies objects in crime scene images.",
+            features: ["Automated Detection", "Improves Accuracy", "Time Efficient ","Real-Time Processing"],
+            Technologies:["Programming Language: Python ","Frame work: Django", "Frontend: HTML,CSS,Javascript","Operating System: Windows","IDE/Editor: VS Code","Algorithm: CNN(YOLO )"],
+            slides: ["assets/cr-2.png", "assets/cr-1.jpeg", "assets/cr-3.jpeg", "assets/cr-4.png", "assets/cr-5.jpeg", "assets/cr-6.jpeg", "assets/cr-7.jpeg",],   
+            repo: "https://github.com/Jishnu1234567/Crime-Scene-Detection"
+        },
+        {
+            title: "TravelBy - Travel Planning Application",
+            description: "A full-stack web application designed to simplify and enhance the travel planning experience.",
+            features: ["Booking management", "Explore Destinations", "Chatbot assistant","language switch"],
+            Technologies:["Programming Language: JavaScript ","Frame work: React", "Frontend: HTML,CSS,Javascript(JSX)","Operating System: Windows","IDE/Editor: VS Code","Database: MongoDB"],
+            slides: ["assets/tr-1.jpeg", "assets/tr-2.jpeg", "assets/tr-3.png", "assets/tr-4.png", "assets/tr-5.png", ],
+            repo: "https://github.com/Jishnu1234567/TravelBy"
+        },
+        {
+            title: "AI-Interview Preparation Platform",
+            description: "Provides AI questions for the user based on the resume and the job role provided.",
+            features: ["Resume parsing", "AI question generation", "Result downloading"],
+            Technologies:["Programming Language: Python ","Frame work: Django", "Frontend: HTML,CSS,Javascript","Operating System: Windows","IDE/Editor: VS Code","Algorithm: CNN"],
+            slides: ["assets/ai1.png", "assets/ai2.jpeg", "assets/ai3.jpeg", "assets/ai4.jpeg", "assets/ai5.png", ],
+            repo: "https://github.com/Jishnu1234567/AI-Interview"
+        }
+    ];
+
+    window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('loader').classList.add('loader-hidden');
+    }, 1500); // 1.5 seconds delay
+});
+
+    // --- THEME LOGIC ---
+    function toggleTheme() {
+        const b = document.body;
+        const isDark = b.getAttribute('data-theme') === 'dark';
+        b.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        document.getElementById('theme-icon').className = isDark ? 'ph-fill ph-sun' : 'ph-fill ph-moon';
+    }
+
+    // --- PROFILE PANEL LOGIC ---
+    function toggleProfile() {
+        const panel = document.getElementById('profile-panel');
+        const overlay = document.getElementById('panel-overlay');
+        panel.classList.toggle('active');
+        
+        if(panel.classList.contains('active')) {
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        } else {
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    // --- RENDER PROJECTS ---
+    const grid = document.getElementById('project-list');
+    projects.forEach((p, i) => {
+        grid.innerHTML += `
+            <div class="project-card" data-reveal onclick="openModal(${i})">
+                <img src="${p.slides[0]}" alt="${p.title}">
+                <div class="project-overlay">
+                    <h3 style="font-size: 24px; margin-bottom: 10px;">${p.title}</h3>
+                    <span class="btn" style="padding: 12px 25px; font-size: 12px;">VIEW PROJECT</span>
+                </div>
+            </div>
+        `;
+    });
+
+    // --- MODAL FUNCTIONS ---
+    function openModal(i) {
+        const p = projects[i];
+        const modal = document.getElementById('project-modal');
+        const preview = document.getElementById('main-preview');
+        const thumbs = document.getElementById('thumb-container');
+        const info = document.getElementById('modal-info-content');
+
+        preview.src = p.slides[0];
+        thumbs.innerHTML = p.slides.map((s, idx) => 
+            `<img src="${s}" onclick="updatePreview('${s}', this)" class="${idx===0?'active':''}">`
+        ).join('');
+
+        info.innerHTML = `
+            <span style="color: var(--primary); font-weight: 800; letter-spacing: 2px; font-size: 11px; text-transform: uppercase;">Project Detail</span>
+            <h2 style="font-size: 32px; margin: 10px 0 20px 0;">${p.title}</h2>
+            <p style="color: var(--text-dim); line-height: 1.6; margin-bottom: 25px; font-size: 14px;">${p.description}</p>
+            
+            <h4 style="font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="ph-bold ph-list-checks" style="color: var(--primary)"></i> Key Features
+            </h4>
+            <div style="margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 8px;">
+                ${p.features.map(f => `<span class="feature-tag" style="margin:0;">${f}</span>`).join('')}
+            </div>
+
+            <h4 style="font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                <i class="ph-bold ph-cpu" style="color: var(--primary)"></i> Tech Stack
+            </h4>
+            <div style="margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                ${p.Technologies ? p.Technologies.map(t => `
+                    <div style="font-size: 12px; color: var(--text-dim); background: var(--card-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--glass-border);">
+                        ${t}
+                    </div>
+                `).join('') : ''}
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <a href="${p.repo}" target="_blank" class="btn" style="padding: 15px 25px; font-size: 14px;">
+                    <i class="ph-bold ph-github-logo"></i> View Source
+                </a>
+            </div>
+        `;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('project-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function updatePreview(src, thumb) {
+        document.getElementById('main-preview').src = src;
+        document.querySelectorAll('.thumb-grid img').forEach(img => img.classList.remove('active'));
+        thumb.classList.add('active');
+    }
+
+    // --- CURSOR LOGIC ---
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('a, button, .project-card, .social-link').forEach(el => {
+        el.onmouseenter = () => cursor.classList.add('cursor-hover');
+        el.onmouseleave = () => cursor.classList.remove('cursor-hover');
+    });
+
+    // --- REVEAL ON SCROLL LOGIC ---
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('[data-reveal]').forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(30px)";
+        el.style.transition = "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+        observer.observe(el);
+    });
+</script>
+</body>
+</html>
